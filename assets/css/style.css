@@ -16,3 +16,13 @@ input {
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+#results {
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#search-text {
+    margin-bottom: 20px;
+}
+
