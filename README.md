@@ -50,9 +50,9 @@ When the user wants to reset their search history, they can click the "Clear Rec
 Developer - Francesco Albanese
 
 Styling:
-Bootstrap
+Bootstrap,
 Google Fonts
 
 Interactivity:
-jQuery
+jQuery,
 Moment.js
