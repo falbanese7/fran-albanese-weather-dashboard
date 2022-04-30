@@ -14,7 +14,7 @@ let day = moment().format('M/DD/YYYY');
 
 // This function calls the OpenWeather Geocoding API in order to gather the latitudinal and longitudinal coordinates of the user's selected city.
 function getCoordinates() {
-    const cityConvert = 'http://api.openweathermap.org/geo/1.0/direct?q='+userInput.value+'&limit=1&appid=1158e7e2e205b37a0d1f795667970aaf'
+    const cityConvert = 'https://api.openweathermap.org/geo/1.0/direct?q='+userInput.value+'&limit=1&appid=1158e7e2e205b37a0d1f795667970aaf'
  
     fetch(cityConvert)
     .then(function (response) {
@@ -52,7 +52,7 @@ function renderWeatherData(data) {
         const weatherIcon = data.current.weather[0].icon;
 
         // Giving text and HTML values to the previously declared variables.
-        displayInput.innerHTML = '<h1>'+ cityName + ' ' + '(' + day + ')' +'<img src=http://openweathermap.org/img/wn/'+ weatherIcon + '@2x.png>' + '</h1>';
+        displayInput.innerHTML = '<h1>'+ cityName + ' ' + '(' + day + ')' +'<img src=https://openweathermap.org/img/wn/'+ weatherIcon + '@2x.png>' + '</h1>';
         temp.textContent = 'Temp: ' + data.current.temp + '°F';
         wind.textContent = 'Wind speed: ' + data.current.wind_speed + ' mph';
         humid.textContent = 'Humidity: ' + data.current.humidity + ' %';
@@ -119,7 +119,7 @@ function renderWeatherData(data) {
             fiveDayCardBody.appendChild(fiveHumid);
             
             fiveDayDate.innerHTML = '<h5>'+ fiveDayDateData + '</h5>';
-            fiveDayIcon.src = 'http://openweathermap.org/img/wn/'+ fiveDayIconData + '@2x.png';
+            fiveDayIcon.src = 'https://openweathermap.org/img/wn/'+ fiveDayIconData + '@2x.png';
             fiveTemp.textContent = 'High temp: ' + data.daily[i].temp.max + '°F';
             fiveWind.textContent = 'Wind speed: ' + data.daily[i].wind_speed  + ' mph';
             fiveHumid.textContent = 'Humidity: ' + data.daily[i].humidity + ' %';
