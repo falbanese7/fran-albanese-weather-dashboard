@@ -30,20 +30,37 @@ input {
     background-color: limegreen;
     width: fit-content;
     font-weight: bolder;
+    padding: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
 }
 
 .moderateUVI {
     background-color: yellow;
     width: fit-content;
     font-weight: bolder;
+    padding: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
 }
 
 .severeUVI {
     background-color: red;
     width: fit-content;
     font-weight: bolder;
+    padding: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
 }
 
-#five-day-card {
+#five-day-title {
+    padding: 10px;
+}
+
+.five-day-card {
     background-color: #2c3e50;
+    color: white;
 }

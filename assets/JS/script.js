@@ -40,24 +40,27 @@ function renderWeatherData(data) {
         const wind = document.createElement('p');
         const humid = document.createElement('p');
         const uvIndex = document.createElement('p');
-        const weatherIcon = data.current.weather[0].icon
+        const uvSpan = document.createElement('span');
+        const weatherIcon = data.current.weather[0].icon;
 
         displayInput.innerHTML = '<h1>'+ cityName + ' ' + '(' + day + ')' +'<img src=http://openweathermap.org/img/wn/'+ weatherIcon + '@2x.png>' + '</h1>';
         temp.textContent = 'Temp: ' + data.current.temp + '°F';
         wind.textContent = 'Wind speed: ' + data.current.wind_speed + ' mph';
         humid.textContent = 'Humidity: ' + data.current.humidity + ' %';
-        uvIndex.textContent = 'UV Index: ' + data.current.uvi;
+        uvIndex.textContent = 'UV Index: ';
+        uvSpan.textContent = data.current.uvi;
 
         if (data.current.uvi < 3) {
-            uvIndex.classList.add('lowUVI')
+            uvSpan.classList.add('lowUVI')
         } else if ( data.current.uvi < 5) {
-            uvIndex.classList.add('moderateUVI')
+            uvSpan.classList.add('moderateUVI')
         } else if (data.current.uvi > 5) {
-            uvIndex.classList.add('severeUVI')
+            uvSpan.classList.add('severeUVI')
         } else {
             console.log('UV Index is astronomically high')
         }
 
+        uvIndex.appendChild(uvSpan)
         weatherData.appendChild(temp);
         weatherData.appendChild(wind);
         weatherData.appendChild(humid);
@@ -66,23 +69,28 @@ function renderWeatherData(data) {
         displayResults.appendChild(weatherData);
         displayResults.classList.add('border', 'border-dark');
 
-    let fiveDayAPI = 'https://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid=1158e7e2e205b37a0d1f795667970aaf&units=imperial'
+    let fiveDayAPI = 'https://api.openweathermap.org/data/2.5/onecall?lat='+lat+'&lon='+lon+'&exclude=current,minutely,hourly,alerts&appid=1158e7e2e205b37a0d1f795667970aaf&units=imperial'
 
     fetch(fiveDayAPI)
     .then(function (response) {
         return response.json();
     }).then(function (data) {
         console.log(data);
+        
+        const fiveDayTitle = document.getElementById('five-day-title')
+        fiveDayTitle.innerHTML = 'Five Day Forecast'
 
-        for (i = 1; i < data.list.length; i+=6) {
+        for (i = 1; i < 6; i++) {
             const fiveDayCol = document.createElement('div');
             fiveDayCol.setAttribute('class', 'col-12 col-md-6 col-lg mb-3')
             const fiveDayCard = document.createElement('div');
-            fiveDayCard.setAttribute('class', 'card')
+            fiveDayCard.setAttribute('class', 'card five-day-card')
             const fiveDayCardBody = document.createElement('div');
             fiveDayCardBody.setAttribute('class', 'card-body')
-            const fiveDayDate = moment(data.list[i].dt_txt).format('M/DD/YYYY');
-            const fiveDayIcon = data.list[i].weather[i].icon;
+            const fiveDayDateData = moment.unix(data.daily[i].dt).format('M/DD/YYYY');
+            const fiveDayIconData = data.daily[i].weather[0].icon;
+            const fiveDayDate = document.createElement('p')
+            const fiveDayIcon = document.createElement('img')
             const fiveTemp = document.createElement('p');
             const fiveWind = document.createElement('p');
             const fiveHumid = document.createElement('p');
@@ -92,15 +100,16 @@ function renderWeatherData(data) {
             fiveDayCard.appendChild(fiveDayCardBody);
 
             fiveDayCardBody.appendChild(fiveDayDate);
+            fiveDayCardBody.appendChild(fiveDayIcon);
             fiveDayCardBody.appendChild(fiveTemp);
             fiveDayCardBody.appendChild(fiveWind);
             fiveDayCardBody.appendChild(fiveHumid);
             
-            fiveDayDate.innerHTML = '<h5>'+ fiveDayDate + '</h5>';
-            fiveDayIcon.innerHTML = '<img src=http://openweathermap.org/img/wn/'+ fiveDayIcon + '@2x.png>';
-            fiveTemp.textContent = 'Temp: ' + data.list[i].main.temp + '°F';
-            fiveWind.textContent = 'Wind speed: ' + data.list[i].wind.speed  + ' mph';
-            fiveHumid.textContent = 'Humidity: ' + data.list[i].main.humidity + ' %';
+            fiveDayDate.innerHTML = '<h5>'+ fiveDayDateData + '</h5>';
+            fiveDayIcon.src = 'http://openweathermap.org/img/wn/'+ fiveDayIconData + '@2x.png';
+            fiveTemp.textContent = 'High temp: ' + data.daily[i].temp.max + '°F';
+            fiveWind.textContent = 'Wind speed: ' + data.daily[i].wind_speed  + ' mph';
+            fiveHumid.textContent = 'Humidity: ' + data.daily[i].humidity + ' %';
     
         }
     })
@@ -124,19 +133,3 @@ function handleSearchSubmit(event) {
 }
 
 searchForm.addEventListener('submit', handleSearchSubmit);
-
-// const createContainer = document.createElement('div');
-// const titleEl = document.createElement('h1');
-// const temp = document.createElement('p');
-// const wind = document.createElement('p');
-// const humid = document.createElement('p');
-// const uvIndex = document.createElement('p');
-
-
-// titleEl.textContent = data[i].html_url;
-
-
-
-// tableData.appendChild(link);
-// createTableRow.appendChild(tableData);
-// tableBody.appendChild(createTableRow);
