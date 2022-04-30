@@ -1,59 +1,117 @@
 const userInput = document.getElementById('search-input');
-// const searchBtn = document.getElementById('search-button');
 const searchForm = document.getElementById('search-form');
 const resultEl = document.getElementById('results');
 const displayInput = document.getElementById('search-text');
 const displayResults = document.getElementById('search-content');
 const displayHistory = document.getElementById('search-section');
+const fiveDay = document.getElementById('five-day');
+let day = moment().format('M/DD/YYYY');
 
+function getCoordinates() {
+    const cityConvert = 'http://api.openweathermap.org/geo/1.0/direct?q='+userInput.value+'&limit=1&appid=1158e7e2e205b37a0d1f795667970aaf'
+ 
+    fetch(cityConvert)
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+     renderWeatherData(data);
+    })
+ }
 
+function renderWeatherData(data) {
+    const coordinates = data;
+    console.log(coordinates);
 
-function getWeather() {
-   const cityName = 'http://api.openweathermap.org/geo/1.0/direct?q='+userInput.value+'&limit=1&appid=1158e7e2e205b37a0d1f795667970aaf'
+    let cityName = coordinates[0].name;
+    let lat = coordinates[0].lat;
+    let lon = coordinates[0].lon;
 
-   let coordinates;
-   
-   fetch(cityName)
-   .then(res => res.json())
-   .then(data => coordinates = data)
-   .then(() => console.log(coordinates))
+    let currentWeatherAPI = 'https://api.openweathermap.org/data/2.5/onecall?lat='+lat+'&lon='+lon+'&appid=1158e7e2e205b37a0d1f795667970aaf&units=imperial'
 
+   fetch(currentWeatherAPI)
+    .then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        console.log(data);
+        refreshResults();
+        const weatherData = document.createElement('div');
+        const temp = document.createElement('p');
+        const wind = document.createElement('p');
+        const humid = document.createElement('p');
+        const uvIndex = document.createElement('p');
+        const weatherIcon = data.current.weather[0].icon
 
-//    let currentWeather = 'https://api.openweathermap.org/data/2.5/onecall?lat='+lat+'&lon='+lon+'&exclude=alerts&appid=1158e7e2e205b37a0d1f795667970aaf&units=imperial'
+        displayInput.innerHTML = '<h1>'+ cityName + ' ' + '(' + day + ')' +'<img src=http://openweathermap.org/img/wn/'+ weatherIcon + '@2x.png>' + '</h1>';
+        temp.textContent = 'Temp: ' + data.current.temp + '°F';
+        wind.textContent = 'Wind speed: ' + data.current.wind_speed + ' mph';
+        humid.textContent = 'Humidity: ' + data.current.humidity + ' %';
+        uvIndex.textContent = 'UV Index: ' + data.current.uvi;
 
-   
+        if (data.current.uvi < 3) {
+            uvIndex.classList.add('lowUVI')
+        } else if ( data.current.uvi < 5) {
+            uvIndex.classList.add('moderateUVI')
+        } else if (data.current.uvi > 5) {
+            uvIndex.classList.add('severeUVI')
+        } else {
+            console.log('UV Index is astronomically high')
+        }
 
-//    fetch(currentWeather)
-//     .then(function (response) {
-//         return response.json();
-//     }).then(function (data) {
-//         console.log(data);
-        // refreshResults();
-        // const weatherData = document.createElement('div');
-        // const temp = document.createElement('p');
-        // const wind = document.createElement('p');
-        // const humid = document.createElement('p');
-        // // const uvIndex = document.createElement('p');
+        weatherData.appendChild(temp);
+        weatherData.appendChild(wind);
+        weatherData.appendChild(humid);
+        weatherData.appendChild(uvIndex);
+        displayResults.appendChild(displayInput);
+        displayResults.appendChild(weatherData);
+        displayResults.classList.add('border', 'border-dark');
 
-        // displayInput.innerHTML = '<h1>'+ 'Selected Location: ' + data.name + data.weather[0].icon + '</h1>';
-        // temp.textContent = 'Temp: ' + data.main.temp + '°F';
-        // wind.textContent = 'Wind speed: ' + data.wind.speed + ' mph';
-        // humid.textContent = 'Humidity: ' + data.main.humidity + ' %';
-        // // uvIndex.textContent = data[i].
+    let fiveDayAPI = 'https://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid=1158e7e2e205b37a0d1f795667970aaf&units=imperial'
 
-        // weatherData.appendChild(temp);
-        // weatherData.appendChild(wind);
-        // weatherData.appendChild(humid);
-        // displayResults.appendChild(displayInput);
-        // displayResults.appendChild(weatherData);
-        // resultEl.classList.add('border', 'border-dark');
-   }
+    fetch(fiveDayAPI)
+    .then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        console.log(data);
 
+        for (i = 1; i < data.list.length; i+=6) {
+            const fiveDayCol = document.createElement('div');
+            fiveDayCol.setAttribute('class', 'col-12 col-md-6 col-lg mb-3')
+            const fiveDayCard = document.createElement('div');
+            fiveDayCard.setAttribute('class', 'card')
+            const fiveDayCardBody = document.createElement('div');
+            fiveDayCardBody.setAttribute('class', 'card-body')
+            const fiveDayDate = moment(data.list[i].dt_txt).format('M/DD/YYYY');
+            const fiveDayIcon = data.list[i].weather[i].icon;
+            const fiveTemp = document.createElement('p');
+            const fiveWind = document.createElement('p');
+            const fiveHumid = document.createElement('p');
 
-// function refreshResults() {
-//     displayInput.innerHTML = '';
-//     displayResults.innerHTML ='';
-// }
+            fiveDay.appendChild(fiveDayCol);
+            fiveDayCol.appendChild(fiveDayCard);
+            fiveDayCard.appendChild(fiveDayCardBody);
+
+            fiveDayCardBody.appendChild(fiveDayDate);
+            fiveDayCardBody.appendChild(fiveTemp);
+            fiveDayCardBody.appendChild(fiveWind);
+            fiveDayCardBody.appendChild(fiveHumid);
+            
+            fiveDayDate.innerHTML = '<h5>'+ fiveDayDate + '</h5>';
+            fiveDayIcon.innerHTML = '<img src=http://openweathermap.org/img/wn/'+ fiveDayIcon + '@2x.png>';
+            fiveTemp.textContent = 'Temp: ' + data.list[i].main.temp + '°F';
+            fiveWind.textContent = 'Wind speed: ' + data.list[i].wind.speed  + ' mph';
+            fiveHumid.textContent = 'Humidity: ' + data.list[i].main.humidity + ' %';
+    
+        }
+    })
+})
+}
+
+function refreshResults() {
+    displayInput.innerHTML = '';
+    displayResults.innerHTML = '';
+    fiveDay.innerHTML = '';
+}
 
 function handleSearchSubmit(event) {
     event.preventDefault();
@@ -62,7 +120,7 @@ function handleSearchSubmit(event) {
         alert(response.message)
     }
 
-    getWeather();
+    getCoordinates();
 }
 
 searchForm.addEventListener('submit', handleSearchSubmit);
