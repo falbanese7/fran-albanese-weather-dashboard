@@ -2,7 +2,7 @@
 
 Welcome to my weather dashboard! In this README file are instructions on how to use the application.
 
-Link to application - https://falbanese96.github.io/fran-albanese-weather-dashboard/
+Link to application - https://falbanese7.github.io/fran-albanese-weather-dashboard/
 
 ## Searching for a city
 
